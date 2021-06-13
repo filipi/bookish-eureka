@@ -1,0 +1,6 @@
+tem 76 camadas
+76 menos a ultima imagem que tem, vai dar o proxima camada a salvar
+por exemplo
+Se a ultima imagem é 13
+76 - 13 = 63
+O layer 63 dará a imagem 14
