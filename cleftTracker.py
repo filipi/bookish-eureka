@@ -215,8 +215,8 @@ class App:
                         
                     ###################### Aqui que se escolhe o metodo ###
                     #p = cv2.goodFeaturesToTrack(frame_gray, mask = mask, **feature_params)
-                    #p = goodCleftsToTrack(frame_gray)
-                    p = goodCleftsToTrackPolar(frame_gray)
+                    p = goodCleftsToTrack(frame_gray)
+                    #p = goodCleftsToTrackPolar(frame_gray)
                     #######################################################
                     
                     if p is not None:
