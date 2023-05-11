@@ -25,7 +25,7 @@ import numpy as np
 import cv2
 import video
 from common import anorm2, draw_str
-from time import clock
+#from time import clock
 
 lk_params = dict( winSize  = (15, 15),
                   maxLevel = 2,
@@ -80,7 +80,9 @@ class App:
                         if len(tr) > self.track_len:
                             del tr[0]
                         new_tracks.append(tr)
-                        cv2.circle(vis, (x, y), 2, (0, 255, 0), -1)
+                        print(x, y);
+                        cv2.circle(vis, (int(x), int(y)), 2, (0, 255, 0), -1)
+                    print("")
                     
                     self.tracks = new_tracks
                     cv2.polylines(vis, [np.int32(tr) for tr in self.tracks], False, (0, 0, 0))
@@ -101,6 +103,7 @@ class App:
                 trail_mask = np.bitwise_and(trail_mask, trail_channels)#<<<<<<<<<<                    
                 #trail_mask = np.bitwise_and(trail_mask, vis_gray)#<<<<<<<<<<                    
                 print(vis_gray.shape)
+
 
             self.frame_idx += 1
             self.prev_gray = frame_gray
