@@ -16,6 +16,7 @@ tracks = []
 def process_contour(contour):
     # Extract the x-values from the contour
     x_values = [pt[0][0] for pt in contour]
+    #print(f'Contornos: {contour}')
 
     local_minima_indices = scipy.signal.argrelextrema(np.array(x_values), np.less)[0]
 
@@ -32,22 +33,19 @@ while True:
         frameTracks = frame.copy()
         frameTeste = frame.copy()
 
+    frameGray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     frameContour = frame.copy()
     frameOptical = frame.copy()
     #frameReturn = frame.copy()
 
     # Detecção da linha de contorno
-    frameGray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    frameBlur = cv2.GaussianBlur(frameGray, (7,7), 1)
     _, frameThreshold = cv2.threshold(frameGray, 190, 255, cv2.THRESH_BINARY_INV)
     contours, _ = cv2.findContours(frameThreshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    #contours = getContourns(frameThreshold, frameContour)
     for cnt in contours:
         cv2.drawContours(frameContour, cnt, -1, (255,0,255), 1)
-
     # Detectar minimos locais
     for contour in contours:
-        epsilon = 0.0025* cv2.arcLength(contour, True)
+        epsilon = 0.0022* cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, epsilon, True)
         local_minima_points = process_contour(approx)
         #print(f'Local Minimas: {local_minima_points}')
@@ -57,6 +55,9 @@ while True:
     # Formata todos os pontos de minima do Frame atual 
     cleftsInFrame = np.float32(list(local_minima_points)).reshape(-1,2)
     #print(f'Clefts In Frame: {cleftsInFrame}')
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
+    cleftsInFrame = cv2.cornerSubPix(frameGray, cleftsInFrame, (5,5), (-1,-1), criteria)
+    #print(f'Clefts In Frame With Criteria: {cleftsInFrame}')
     
 
     # Calculo de Fluxo Otico
@@ -95,3 +96,5 @@ while True:
     ch = cv2.waitKey(0)
     if ch == ord('q'):
         break
+    elif ch == ord('w'):
+        pass
