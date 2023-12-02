@@ -31,8 +31,10 @@ import cmath
 
 from scipy.signal import argrelextrema
 
-lk_params = dict( winSize  = (15, 15),
-                  maxLevel = 2,
+#lk_params = dict( winSize  = (15, 15),
+lk_params = dict( winSize  = (30, 30),
+#                  maxLevel = 2,
+                  maxLevel = 5,
                   criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
 feature_params = dict( maxCorners = 500,
