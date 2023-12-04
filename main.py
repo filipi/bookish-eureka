@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from scipy import signal, spatial
-from Params import Linear, Polar, Params
+from Params import Linear, Params
 
 lk_params = dict( winSize  = (15, 15),
                   maxLevel = 2,
@@ -30,7 +30,7 @@ def goodCleftsToTrack(frameGray, contours, params:Params):
     return cleftsInFrame
 
 def main():
-    fileName = 'LR_Re5000_fixMissingFrame'
+    fileName = 'LR_Re8950'
     cap = cv2.VideoCapture(f'obtaningData\\{fileName}.mp4')
 
     lastFrameGray = None
@@ -62,7 +62,6 @@ def main():
         for point in cleftsInFrame:
             cv2.circle(frameMinima, tuple((int(point[0]) , int(point[1]) )), 3, (0, 255, 0), -1)
 
-    
         # Reduz cortes de linha
         if lastOptical is not None:
             cleftTree = spatial.cKDTree(cleftsInFrame)
@@ -71,11 +70,8 @@ def main():
             for i, j in enumerate(indice):
                 if distance[i] > 1:
                     continue
-                print('a')
                 cv2.line(frameTracks, (int(cleftsInFrame[i][0]), int(cleftsInFrame[i][1])), (int(lastOptical[j][0]), int(lastOptical[j][1])), (255, 0, 0), 1)
 
-
-    
         # Calculo de Fluxo Otico
         if len(cleftsInFrame) > 0:
             optical, st, err = cv2.calcOpticalFlowPyrLK(lastFrameGray, frameGray, cleftsInFrame, None, **lk_params)
@@ -91,8 +87,6 @@ def main():
                 cv2.circle(frameOptical, (int(x), int(y)), 2, (255, 0,  0), -1)
                 # Linhas do ponto anterior até o ótico
                 cv2.line(frameTracks, (int(tr[0]), int(tr[1])), (int(x), int(y)), (0, 0, 255), 1)
-            #Salva linha em track Global
-            #tracks.append(newTracks)
             lastOptical = optical.reshape(-1, 2)
 
         lastFrameGray = frameGray
@@ -101,7 +95,6 @@ def main():
             frameReturn = cv2.add(frameReturn, cv2.bitwise_not(frameMinima))
             frameReturn = cv2.add(frameReturn, cv2.bitwise_not(frame))
         
-
         cv2.imshow('Result Minima', frameMinima)
         #cv2.imshow('Result Contour', frameContour)
         cv2.imshow('Result Optical', frameOptical)
@@ -119,11 +112,11 @@ def main():
         if ch == ord('q'):
             break
         elif ch == ord('w'):
-            pass
-    #ch = cv2.waitKey(0)
-    #cv2.imwrite(f'results\\{fileName}\\tracks.png ', frameTracks)
-    #cv2.imwrite(f'results\\{fileName}\\following.png', cv2.bitwise_not(frameReturn))
-    #cv2.imwrite(f'results\\{fileName}\\following_tracks.png', cv2.bitwise_not(cv2.add(cv2.bitwise_not(frameTracks),frameReturn)))
+            pass 
+    ch = cv2.waitKey(0)
+    cv2.imwrite(f'results\\{fileName}\\tracks.png ', frameTracks)
+    cv2.imwrite(f'results\\{fileName}\\following.png', cv2.bitwise_not(frameReturn))
+    cv2.imwrite(f'results\\{fileName}\\following_tracks.png', cv2.bitwise_not(cv2.add(cv2.bitwise_not(frameTracks),frameReturn)))
 
 if __name__ == '__main__':
     main()
