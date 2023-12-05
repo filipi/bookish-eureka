@@ -1,7 +1,9 @@
+import sys
 import cv2
 import numpy as np
 from scipy import signal, spatial
 from Params import Linear, Params
+
 
 lk_params = dict( winSize  = (15, 15),
                   maxLevel = 2,
@@ -30,8 +32,14 @@ def goodCleftsToTrack(frameGray, contours, params:Params):
     return cleftsInFrame
 
 def main():
-    fileName = 'LR_Re8950'
-    cap = cv2.VideoCapture(f'obtaningData\\{fileName}.mp4')
+    if len(sys.argv) > 1:
+        fileName = sys.argv[1]
+        print(f'Rodando arquivo: {fileName}')
+    else:
+        print(f'Caminho nao reconhecido')
+        return
+
+    cap = cv2.VideoCapture(fileName)
 
     lastFrameGray = None
     frameTracks = None
@@ -114,9 +122,9 @@ def main():
         elif ch == ord('w'):
             pass 
     ch = cv2.waitKey(0)
-    cv2.imwrite(f'results\\{fileName}\\tracks.png ', frameTracks)
-    cv2.imwrite(f'results\\{fileName}\\following.png', cv2.bitwise_not(frameReturn))
-    cv2.imwrite(f'results\\{fileName}\\following_tracks.png', cv2.bitwise_not(cv2.add(cv2.bitwise_not(frameTracks),frameReturn)))
+    #cv2.imwrite(f'results\\{fileName}\\tracks.png ', frameTracks)
+    #cv2.imwrite(f'results\\{fileName}\\following.png', cv2.bitwise_not(frameReturn))
+    #cv2.imwrite(f'results\\{fileName}\\following_tracks.png', cv2.bitwise_not(cv2.add(cv2.bitwise_not(frameTracks),frameReturn)))
 
 if __name__ == '__main__':
     main()
